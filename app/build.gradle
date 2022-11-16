@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.test01'
+    namespace 'com.example.mp_team3'
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.test01"
+        applicationId "com.example.mp_team3"
         minSdk 21
         targetSdk 32
         versionCode 1
