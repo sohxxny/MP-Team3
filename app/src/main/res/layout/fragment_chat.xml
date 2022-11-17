@@ -24,12 +24,13 @@
                 android:layout_marginLeft="15dp"
                 android:layout_weight="1"
                 android:text="채팅"
+                android:textColor="#303030"
                 android:textSize="20sp" />
 
             <ImageView
-                android:id="@+id/imageView9"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:id="@+id/imgAlarm"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:layout_margin="20dp"
                 app:srcCompat="@drawable/bell" />
 
