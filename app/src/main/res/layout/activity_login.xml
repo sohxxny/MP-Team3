@@ -42,6 +42,13 @@
             android:ems="10"
             android:hint="비밀번호"
             android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/btnSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/login_button_shape"
+            android:text="로그인" />
     </LinearLayout>
 
     <LinearLayout
@@ -49,27 +56,61 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
-        android:layout_weight="6"
-        android:orientation="horizontal">
+        android:layout_weight="5"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_weight="0"
+            android:gravity="center_horizontal"
+            android:text="──　　또는　　──" />
 
         <Button
-            android:id="@+id/btnSignIn"
-            android:layout_width="wrap_content"
+            android:id="@+id/btnGoogleLogin"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_weight="1"
-            android:background="@drawable/login_button_shape"
-            android:text="Button" />
+            android:text="Google로 로그인" />
 
-        <Button
-            android:id="@+id/btnSignUp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:layout_weight="1"
-            android:background="@drawable/login_button_shape"
-            android:text="Button" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnJoin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="#00FFFFFF"
+                android:text="회원가입"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:text="|"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/btnFindId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="#00FFFFFF"
+                android:text="아이디/비밀번호 찾기"
+                android:textColor="#000000" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>
