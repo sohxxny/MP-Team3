@@ -44,7 +44,7 @@
                 android:layout_height="40dp"
                 android:layout_weight="10"
                 android:background="@drawable/search_border"
-                android:drawableLeft="@drawable/search"
+                android:drawableLeft="@drawable/search_resize"
                 android:paddingLeft="15dp"
                 android:text="    찾고싶은 상품을 검색하세요!"
                 android:textAlignment="viewStart"
