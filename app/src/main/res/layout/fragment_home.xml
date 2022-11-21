@@ -2,12 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragment_home">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/creatPost"
+        android:id="@+id/fabCreatePost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -30,12 +31,13 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/imageView"
+            <ImageButton
+                android:id="@+id/btnMenu"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_margin="20dp"
-                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
                 app:srcCompat="@drawable/menu" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -50,12 +52,13 @@
                 android:textAlignment="viewStart"
                 android:textColor="#ACACAC" />
 
-            <ImageView
-                android:id="@+id/imageView2"
+            <ImageButton
+                android:id="@+id/btnHomeAlarm"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_margin="20dp"
-                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
                 app:srcCompat="@drawable/bell" />
         </LinearLayout>
 
