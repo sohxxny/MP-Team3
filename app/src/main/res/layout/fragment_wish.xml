@@ -27,11 +27,13 @@
                 android:textColor="#303030"
                 android:textSize="20sp" />
 
-            <ImageView
-                android:id="@+id/imgAlarm"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+            <ImageButton
+                android:id="@+id/btnWishAlarm"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_margin="20dp"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
                 app:srcCompat="@drawable/bell" />
 
         </LinearLayout>
