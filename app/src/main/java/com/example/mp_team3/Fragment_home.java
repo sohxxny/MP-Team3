@@ -20,6 +20,7 @@ public class Fragment_home extends Fragment {
 
         // Inflate the layout for this fragment
 
+        // FloatingActionButton 누르면 PostActivity로 이동
         view = inflater.inflate(R.layout.fragment_home,container,false);
         createPost = (FloatingActionButton) view.findViewById(R.id.fabCreatePost);
 
@@ -31,8 +32,9 @@ public class Fragment_home extends Fragment {
                 startActivity(intent);
             }
         });
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        return view;
     }
+
 
 
 
