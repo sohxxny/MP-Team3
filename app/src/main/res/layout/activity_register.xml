@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".JoinActivity">
+    tools:context=".RegisterActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -56,8 +56,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:ems="10"
-            android:inputType="textEmailAddress"
-            android:text="이메일" />
+            android:hint="이메일"
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/edInputPassword"
@@ -65,8 +65,17 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="비밀번호" />
+            android:hint="비밀번호"
+            android:inputType="textPassword" />
+
+        <EditText
+            android:id="@+id/edInputPasswordCheck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:ems="10"
+            android:hint="비밀번호 확인"
+            android:inputType="textPassword" />
 
         <EditText
             android:id="@+id/edInputNickname"
@@ -74,21 +83,40 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="닉네임" />
+            android:hint="닉네임"
+            android:inputType="textPersonName" />
 
-        <CheckBox
-            android:id="@+id/cbAgreeTos"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="이용약관 동의" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnSignUp"
+            <CheckBox
+                android:id="@+id/cbAgreeTos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:text="이용약관 동의" />
+
+            <ImageButton
+                android:id="@+id/btnTos"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center|right"
+                android:background="@android:color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/angle_right" />
+        </LinearLayout>
+
+        <android.widget.Button
+            android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="회원가입" />
+            android:background="@drawable/login_button_shape"
+            android:text="회원가입"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 </LinearLayout>
