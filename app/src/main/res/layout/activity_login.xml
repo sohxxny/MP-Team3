@@ -14,7 +14,7 @@
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
         android:layout_marginBottom="20dp"
-        android:layout_weight="5"
+        android:layout_weight="4"
         android:gravity="bottom"
         android:orientation="vertical">
 
@@ -31,17 +31,23 @@
             android:id="@+id/edId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:hint="아이디" />
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/input_border"
+            android:hint="아이디"
+            android:padding="15dp"
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/edPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/input_border"
             android:ems="10"
             android:hint="비밀번호"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:padding="15dp"
+            android:textSize="14sp" />
 
         <android.widget.Button
             android:id="@+id/btnSignIn"
@@ -69,11 +75,17 @@
             android:gravity="center_horizontal"
             android:text="──　　또는　　──" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/btnGoogleLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Google로 로그인" />
+            android:background="@drawable/round_border"
+            android:drawableStart="@drawable/google_resize"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="Google로 로그인"
+            android:textAllCaps="false"
+            android:textColor="#A6A6A6" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -89,7 +101,7 @@
                 android:layout_weight="0"
                 android:background="#00FFFFFF"
                 android:text="회원가입"
-                android:textColor="#000000" />
+                android:textColor="#616161" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -99,6 +111,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_weight="0"
                 android:text="|"
+                android:textColor="#ACACAC"
                 android:textSize="24sp" />
 
             <Button
@@ -108,7 +121,7 @@
                 android:layout_weight="0"
                 android:background="#00FFFFFF"
                 android:text="아이디/비밀번호 찾기"
-                android:textColor="#000000" />
+                android:textColor="#616161" />
 
         </LinearLayout>
 
