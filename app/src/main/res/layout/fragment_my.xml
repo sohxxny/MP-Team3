@@ -2,10 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/myLinear"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Fragment_my" >
+    tools:context=".Fragment_my">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,7 +46,8 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="visible">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imgProfile"
@@ -55,8 +57,9 @@
             android:src="@drawable/user" />
 
         <LinearLayout
-            android:layout_width="210dp"
+            android:layout_width="164dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -82,6 +85,7 @@
             android:id="@+id/btnMyEdit"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_marginRight="20dp"
             android:background="@android:color/transparent"
             android:scaleType="centerCrop"
             android:src="@drawable/angle_right" />
@@ -113,9 +117,9 @@
                 android:id="@+id/btnMySell"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/my_sell"
-                android:background="@android:color/transparent"/>
+                android:src="@drawable/my_sell" />
 
             <TextView
                 android:id="@+id/tvMySell"
@@ -138,9 +142,9 @@
                 android:id="@+id/btnMyBuy"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/my_buy"
-                android:background="@android:color/transparent"/>
+                android:src="@drawable/my_buy" />
 
             <TextView
                 android:id="@+id/tvMyBuy"
@@ -163,9 +167,9 @@
                 android:id="@+id/btnMyWish"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/my_wish"
-                android:background="@android:color/transparent"/>
+                android:src="@drawable/my_wish" />
 
             <TextView
                 android:id="@+id/tvMyWish"

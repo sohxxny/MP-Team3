@@ -27,18 +27,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="10"
+            android:paddingLeft="30dp"
             android:text="프로필 수정"
             android:textAlignment="center"
             android:textSize="18sp" />
 
         <Button
             android:id="@+id/btnProfClear"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
             android:background="#00ff0000"
             android:text="완료"
-            android:textColor="#A3A3A3" />
+            android:textAlignment="textEnd"
+            android:textColor="#888888" />
 
     </LinearLayout>
 
@@ -76,5 +78,6 @@
         android:ems="10"
         android:hint="닉네임을 입력해주세요."
         android:inputType="textPersonName"
-        android:padding="15dp" />
+        android:padding="15dp"
+        android:textSize="16sp" />
 </LinearLayout>
