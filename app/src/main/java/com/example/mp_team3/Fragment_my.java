@@ -1,6 +1,8 @@
 package com.example.mp_team3;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,8 +22,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 
 import org.w3c.dom.Text;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -29,8 +38,10 @@ public class Fragment_my extends Fragment {
 
     View view;
     String getNick;
+    String getProfUrl;
     TextView tvMyNick;
     CircleImageView imgProfile;
+    Bitmap bitmap;
     private static final String TAG = "Fragment_my";
 
     @Override
@@ -42,10 +53,12 @@ public class Fragment_my extends Fragment {
 
         //닉네임 받아오기
         tvMyNick = view.findViewById(R.id.tvMyNick);
+        imgProfile = view.findViewById(R.id.imgProfile);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("users").document(user.getUid());
+
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -60,6 +73,40 @@ public class Fragment_my extends Fragment {
                             }
                         } else {
                             Log.d(TAG, "No such document");
+                        }
+                    }
+                    getProfUrl = document.getData().get("profileImageUrl").toString();
+
+                    if (getProfUrl != null) {
+                        Thread mThread = new Thread() {
+
+                            @Override
+                            public void run() {
+                                super.run();
+                                try {
+                                    URL url = new URL(getProfUrl);
+
+                                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                                    conn.setDoInput(true);
+                                    conn.connect();
+
+                                    InputStream is = conn.getInputStream();
+                                    bitmap = BitmapFactory.decodeStream(is);
+                                } catch (MalformedURLException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+
+                        mThread.start();
+
+                        try {
+                            mThread.join();
+                            imgProfile.setImageBitmap(bitmap);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
                 } else {

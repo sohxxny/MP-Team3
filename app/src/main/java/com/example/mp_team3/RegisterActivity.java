@@ -42,12 +42,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    public static final int PICK_FROM_ALBUM = 1;
-    private static final String TAG = "RegisterActivity";
-    private Uri imageUri;
-    private String pathUri;
-    private File tempFile;
-    private FirebaseStorage mStorage;
+    static final int PICK_FROM_ALBUM = 1;
+    static final String TAG = "RegisterActivity";
+    Uri imageUri;
+    String imagePath = "";
+    String pathUri;
+    File tempFile;
+    FirebaseStorage mStorage;
     FirebaseAuth mAuth;
     Button btnRegister;
     EditText edInputEmail;
@@ -68,7 +69,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         // 파이어베이스
         mAuth = FirebaseAuth.getInstance();
-        mStorage = FirebaseStorage.getInstance();
 
         // Register button 클릭 리스너
         btnRegister.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
         imgInputProf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                gotoAlbum();
             }
         });
 
@@ -90,37 +90,25 @@ public class RegisterActivity extends AppCompatActivity {
     private void gotoAlbum() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-        startActivityForResult(intent, PICK_FROM_ALBUM);
+        someActivityResultLauncher.launch(intent);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode != RESULT_OK) { // 코드가 틀릴경우
-            Toast.makeText(RegisterActivity.this, "취소 되었습니다", Toast.LENGTH_SHORT);
-            if (tempFile != null) {
-                if (tempFile.exists()) {
-                    if (tempFile.delete()) {
-                        Log.e(TAG, tempFile.getAbsolutePath() + " 삭제 성공");
-                        tempFile = null;
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        imageUri = data.getData();
+                        pathUri = getPath(data.getData());
+                        Log.d(TAG, "PICK_FROM_ALBUM photoUri : " + imageUri);
+                        imgInputProf.setImageURI(imageUri); // 이미지 띄움
                     }
                 }
-            }
-            return;
-        }
+            });
 
-        switch (requestCode) {
-            case PICK_FROM_ALBUM: { // 코드 일치
-                // Uri
-                imageUri = data.getData();
-                pathUri = getPath(data.getData());
-                Log.d(TAG, "PICK_FROM_ALBUM photoUri : " + imageUri);
-                imgInputProf.setImageURI(imageUri); // 이미지 띄움
-                break;
-            }
-        }
-    }
 
-    // uri 절대경로 가져오기
     public String getPath(Uri uri) {
 
         String[] proj = {MediaStore.Images.Media.DATA};
@@ -161,44 +149,26 @@ public class RegisterActivity extends AppCompatActivity {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                            final String uid = task.getResult().getUser().getUid();
+                            final String uid = user.getUid();
                             final Uri file = Uri.fromFile(new File(pathUri)); // path
 
+                            mStorage = FirebaseStorage.getInstance();
                             StorageReference storageReference = mStorage.getReference()
                                     .child("usersprofileImages").child("uid/"+file.getLastPathSegment());
                             storageReference.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                    Log.i("이미지","테스트");
                                     final Task<Uri> imageUrl = task.getResult().getStorage().getDownloadUrl();
                                     while (!imageUrl.isComplete()) ;
 
                                     UserModel userModel = new UserModel(nickname, imageUrl.getResult().toString(), uid);
 
                                     db.collection("users").document(user.getUid()).set(userModel);
-
-
                                 }
 
                             });
 
-//                            if(user != null) {
-//                                db.collection("users").document(user.getUid()).set(userModel)
-//                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                            @Override
-//                                            public void onSuccess(Void aVoid) {
-//                                                Toast.makeText(RegisterActivity.this, "회원정보 등록을 성공했습니다", Toast.LENGTH_SHORT);
-//                                            }
-//                                        })
-//                                        .addOnFailureListener(new OnFailureListener() {
-//                                            @Override
-//                                            public void onFailure(@NonNull Exception e) {
-//                                                Toast.makeText(RegisterActivity.this, "회원정보 등록에 실패했습니다", Toast.LENGTH_SHORT);
-//                                                Log.w(TAG, "Error writing document", e);
-//                                            }
-//                                        });
-//                            } else{
-//
-//                            }
                             // Login 화면으로 전환
                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(intent);
