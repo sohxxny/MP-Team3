@@ -6,11 +6,19 @@ public class UserModel {
     public String nickname;
     public String profileImageUrl;
     public String uid;
+    public String pushToken;
 
     public UserModel(String nickname, String profileImageUrl, String uid) {
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
         this.uid = uid;
+    }
+
+    public UserModel(String nickname, String profileImageUrl, String uid, String pushToken) {
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
+        this.uid = uid;
+        this.pushToken = pushToken;
     }
 
     public UserModel(String nickname) {
