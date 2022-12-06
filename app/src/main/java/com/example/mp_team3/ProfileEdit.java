@@ -1,22 +1,35 @@
 package com.example.mp_team3;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -32,6 +45,11 @@ public class ProfileEdit extends AppCompatActivity {
     CircleImageView imgProfChange;
     EditText etProfNick;
     private FirebaseStorage storage;
+    private FirebaseUser user;
+    UserModel newUserModel;
+    String uid;
+    Task<Uri> imageUrl;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +63,35 @@ public class ProfileEdit extends AppCompatActivity {
         etProfNick = (EditText) findViewById(R.id.etProfNick);
 
         storage = FirebaseStorage.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        uid = user.getUid();
+        db = FirebaseFirestore.getInstance();
+
+        DocumentReference docRef = db.collection("users").document(uid);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String oldNick = document.getData().get("nickname").toString();
+                        etProfNick.setText(oldNick);
+                    }
+                }
+            }
+        });
+
+        db.collection("users").document(uid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -64,50 +111,65 @@ public class ProfileEdit extends AppCompatActivity {
     private void loadAlbum() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-        startActivityForResult(intent, GALLERY_CODE);
+        someActivityResultLauncher.launch(intent);
     }
 
-    protected void onActivityResult(int requestCode, final int resultCode, final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == GALLERY_CODE) {
-            Uri file = data.getData();
-            StorageReference storageRef = storage.getReference();
-            StorageReference riverRef = storageRef.child("");
-            UploadTask uploadTask = riverRef.putFile(file);
-
-            try {
-                InputStream in = getContentResolver().openInputStream(data.getData());
-                Bitmap img = BitmapFactory.decodeStream(in);
-                in.close();
-                imgProfChange.setImageBitmap(img);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            uploadTask.addOnFailureListener(new OnFailureListener() {
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
                 @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(ProfileEdit.this, "사진이 정상적으로 업로드 되지 않았습니다.", Toast.LENGTH_SHORT).show();
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(ProfileEdit.this, "사진이 정상적으로 업로드 되었습니다.", Toast.LENGTH_SHORT).show();
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+
+                        Intent data = result.getData();
+                        Uri file = data.getData();
+
+                        StorageReference storageRef = storage.getReference();
+                        StorageReference riverRef = storageRef.child("usersprofileImages/" + uid + ".jpg");
+                        riverRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        });
+
+                        try {
+                            InputStream in = getContentResolver().openInputStream(data.getData());
+                            Bitmap img = BitmapFactory.decodeStream(in);
+                            in.close();
+                            imgProfChange.setImageBitmap(img);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        UploadTask uploadTask = riverRef.putFile(file);
+
+                        uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                imageUrl = task.getResult().getStorage().getDownloadUrl();
+                                while (!imageUrl.isComplete());
+
+                            }
+                        });
+                    }
                 }
             });
-        }
-    }
 
     public void sendNick() {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
-        Bundle bundle = new Bundle();
-
         String nickname = etProfNick.getText().toString();
-        bundle.putString("nickname", nickname);
+
+        newUserModel = new UserModel(nickname,imageUrl.getResult().toString() ,uid);
+        db.collection("users").document(user.getUid()).set(newUserModel);
         Fragment_my fragmentMy = new Fragment_my();
-        fragmentMy.setArguments(bundle);
         transaction.replace(R.id.myLinear, fragmentMy).commit();
     }
 

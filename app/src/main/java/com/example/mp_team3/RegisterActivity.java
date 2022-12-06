@@ -80,8 +80,6 @@ public class RegisterActivity extends AppCompatActivity {
                 gotoAlbum();
             }
         });
-
-
     }
 
     private void gotoAlbum() {
@@ -133,15 +131,14 @@ public class RegisterActivity extends AppCompatActivity {
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
                             final String uid = user.getUid();
+                            StorageReference storageReference = mStorage.getReference()
+                                    .child("usersprofileImages/" + uid + ".jpg");
 
                             if (imageUri != null) {
                                 mStorage = FirebaseStorage.getInstance();
-                                StorageReference storageReference = mStorage.getReference()
-                                        .child("usersprofileImages/" + uid + ".jpg");
                                 storageReference.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                        Log.i("이미지","테스트");
                                         final Task<Uri> imageUrl = task.getResult().getStorage().getDownloadUrl();
                                         while (!imageUrl.isComplete()) ;
 
