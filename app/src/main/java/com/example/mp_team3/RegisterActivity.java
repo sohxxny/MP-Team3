@@ -66,6 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // 파이어베이스
         mAuth = FirebaseAuth.getInstance();
+        mStorage = FirebaseStorage.getInstance();
 
         // Register button 클릭 리스너
         btnRegister.setOnClickListener(new View.OnClickListener() {
@@ -130,12 +131,13 @@ public class RegisterActivity extends AppCompatActivity {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                            final String uid = user.getUid();
+                            final String uid = task.getResult().getUser().getUid();
                             StorageReference storageReference = mStorage.getReference()
                                     .child("usersprofileImages/" + uid + ".jpg");
 
+                            Log.e("defaultUri", imageUri.toString());
+
                             if (imageUri != null) {
-                                mStorage = FirebaseStorage.getInstance();
                                 storageReference.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
