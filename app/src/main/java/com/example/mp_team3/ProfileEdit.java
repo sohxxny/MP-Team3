@@ -72,9 +72,7 @@ public class ProfileEdit extends AppCompatActivity {
         if(requestCode == GALLERY_CODE) {
             Uri file = data.getData();
             StorageReference storageRef = storage.getReference();
-            StorageReference riverRef = storageRef.child("usersprofileImages/" + uid + ".jpg");
-            mStorage.getReference()
-                    .child("usersprofileImages/" + uid + ".jpg");
+            StorageReference riverRef = storageRef.child("");
             UploadTask uploadTask = riverRef.putFile(file);
 
             try {
