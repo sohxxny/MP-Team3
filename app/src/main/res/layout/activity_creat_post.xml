@@ -107,24 +107,11 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
+        <Spinner
+            android:id="@+id/spnCategory"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:text="카테고리 선택"
-            android:textColor="#6B6B6B"
-            android:textSize="16sp" />
-
-        <ImageButton
-            android:id="@+id/btnCategory"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginRight="10dp"
-            android:background="@android:color/transparent"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/angle_right" />
+            android:entries="@array/spnCategory"/>
 
     </LinearLayout>
 
@@ -136,16 +123,26 @@
         android:layout_marginRight="15dp"
         android:background="#E8E8E8" />
 
-    <EditText
-        android:id="@+id/etPrice"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
         android:layout_marginRight="15dp"
-        android:backgroundTint="#E8E8E8"
-        android:hint="최소금액"
-        android:textSize="16sp" />
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/etPrice"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:layout_weight="20"
+            android:backgroundTint="#E8E8E8"
+            android:ems="10"
+            android:hint="최소금액"
+            android:inputType="number"
+            android:textSize="16sp" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -161,13 +158,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_weight="1"
+            android:layout_marginRight="15dp"
             android:text="경매 마감일자"
             android:textColor="#6B6B6B"
             android:textSize="16sp" />
 
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="#AEAEAE" />
+
         <ImageButton
-            android:id="@+id/imageView7"
+            android:id="@+id/btnTime"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginRight="10dp"
