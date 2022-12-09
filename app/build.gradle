@@ -43,6 +43,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'             // 추가한 코드 (glide 라이브러리)
     implementation 'androidx.navigation:navigation-fragment:2.5.3'      // 추가한 코드 (네비게이션 바)
     implementation 'androidx.navigation:navigation-ui:2.5.3'            // 추가한 코드 (네비게이션 바)
     implementation 'de.hdodenhof:circleimageview:3.1.0'                 // 추가한 코드 (Circle ImageView)
