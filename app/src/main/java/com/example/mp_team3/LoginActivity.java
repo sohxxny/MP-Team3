@@ -5,10 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -58,8 +58,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void SignIn() {
-        String email = edId.getText().toString();
-        String password = edPassword.getText().toString();
+        String email = edId.getText().toString().trim();
+        String password = edPassword.getText().toString().trim();
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -73,8 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                             // 로그인 실패 시
                             if (task.getException() != null) {
                                 String errorText = task.getException().toString();
-                                Toast.makeText(LoginActivity.this, errorText,
-                                        Toast.LENGTH_SHORT).show();
+                                Log.e("로그인 오류", errorText);
                             }
                         }
                     }
