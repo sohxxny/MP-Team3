@@ -1,8 +1,11 @@
 package com.example.mp_team3;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,14 +31,25 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.checkerframework.checker.units.qual.C;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class PostActivity extends AppCompatActivity {
@@ -56,6 +70,14 @@ public class PostActivity extends AppCompatActivity {
     String category;
     RecyclerView recyclerView;  // 이미지를 보여줄 리사이클러뷰
     MultiImageAdapter adapter;  // 리사이클러뷰에 적용시킬 어댑터
+    //postModel 전달
+    String uid;
+    String title;
+    String price;
+    String postingTime;
+    String endTime;
+    String detail;
+    int postNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +106,31 @@ public class PostActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+
+        //post 개수 받아오기
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("posts").document("postNum");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        if (document.exists()) {
+                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                            if (document.getData() != null) {
+                                postNum = Integer.parseInt(document.getData().get("count").toString());
+                            }
+                        } else {
+                            Log.d(TAG, "No such document");
+                        }
+                    }
+
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
 
         // 뒤로가기 버튼
         btnPostCancel.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +166,7 @@ public class PostActivity extends AppCompatActivity {
 
         // 카테고리 드롭다운 (카테고리 선택 시 실행)
         ArrayAdapter spnAdapter = ArrayAdapter.createFromResource(this, R.array.spnCategory
-        , android.R.layout.simple_spinner_dropdown_item);
+                , android.R.layout.simple_spinner_dropdown_item);
         spnAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnCategory.setAdapter(spnAdapter);
         spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -139,7 +186,7 @@ public class PostActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new DatePickerDialog(PostActivity.this, myDatePicker, myCalendar.get(Calendar.YEAR)
-                , myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        , myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 
@@ -151,6 +198,79 @@ public class PostActivity extends AppCompatActivity {
                 alertInfoEmpty(category);
                 // ################ 완료 버튼 클릭하면 실행할 것 ################
 
+                //파이어스토어 연결
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                uid = user.getUid();
+                title = etTitle.getText().toString();
+                price = etPrice.getText().toString();
+                postingTime = new Date().toString();
+                Date end = new Date(myCalendar.getTimeInMillis());
+                endTime = end.toString();
+                detail = etExplain.getText().toString();
+
+                //post 개수 받아오기
+//                DocumentReference docRef = db.collection("posts").document("postNum");
+//                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            DocumentSnapshot document = task.getResult();
+//                            if (document != null) {
+//                                if (document.exists()) {
+//                                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+//                                    if (document.getData() != null) {
+//                                        postNum = Integer.parseInt(document.getData().get("count").toString());
+//                                    }
+//                                } else {
+//                                    Log.d(TAG, "No such document");
+//                                }
+//                            }
+//
+//                        } else {
+//                            Log.d(TAG, "get failed with ", task.getException());
+//                        }
+//                    }
+//                });
+
+
+                //파이어 베이스 게시물 등록 및 postNum 업데이트
+                PostModel postModel = new PostModel(user.getUid(), title, price, category, postingTime, endTime, detail);
+                db.collection("posts").document("POST" + "_" + postNum).set(postModel);
+                docRef.update("count",postNum+1 ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d(TAG, "postNum successfully updated!");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error updating document", e);
+                    }
+                });
+
+                //스토리지에 사진 올리기기
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+
+                for (int i = 0; i < uriList.size(); i++) {
+                    StorageReference storageRef = storage.getReference()
+                            .child("postImages/" + "POST_" + postNum + "_" + i + ".jpg");
+                    storageRef.putFile(uriList.get(i)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            //db에 포스트 추가
+                        }
+                    });
+                }
+
+                Fragment_home fragmentHome = new Fragment_home();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.postLinear, fragmentHome);
+                fragmentTransaction.commit();
+
+                finish();
             }
         });
     }
@@ -194,23 +314,20 @@ public class PostActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1111) {  // 갤러리 접근 코드 1111
-            if(data == null){   // 어떤 이미지도 선택하지 않은 경우 (아무 동작 X)
-            }
-            else{   // 이미지를 하나라도 선택한 경우
-                if(data.getClipData() == null){     // 이미지를 하나만 선택한 경우
+            if (data == null) {   // 어떤 이미지도 선택하지 않은 경우 (아무 동작 X)
+            } else {   // 이미지를 하나라도 선택한 경우
+                if (data.getClipData() == null) {     // 이미지를 하나만 선택한 경우
                     Uri imageUri = data.getData();
                     uriList.add(imageUri);
                     adapter = new MultiImageAdapter(uriList, getApplicationContext());
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
-                }
-                else{      // 이미지를 여러장 선택한 경우
+                } else {      // 이미지를 여러장 선택한 경우
                     ClipData clipData = data.getClipData();
-                    if(clipData.getItemCount() > 10){   // 선택한 이미지가 11장 이상인 경우
+                    if (clipData.getItemCount() > 10) {   // 선택한 이미지가 11장 이상인 경우
                         Toast.makeText(getApplicationContext(), "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG).show();
-                    }
-                    else{   // 선택한 이미지가 1장 이상 10장 이하인 경우
-                        for (int i = 0; i < clipData.getItemCount(); i++){
+                    } else {   // 선택한 이미지가 1장 이상 10장 이하인 경우
+                        for (int i = 0; i < clipData.getItemCount(); i++) {
                             Uri imageUri = clipData.getItemAt(i).getUri();  // 선택한 이미지들의 uri를 가져온다.
                             try {
                                 uriList.add(imageUri);  //uri를 list에 담는다.

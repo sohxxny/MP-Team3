@@ -2,11 +2,13 @@ package com.example.mp_team3;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,8 +22,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     private ArrayList<String[]> pList;
     private ArrayList<Uri> iList;
     private Context pContext;
+    static final String TAG = "ProductAdapter";
 
-    ProductAdapter(ArrayList<String[]> pList, ArrayList<Uri> iList, Context context) {
+    public ProductAdapter(ArrayList<String[]> pList, ArrayList<Uri> iList, Context context) {
         this.pList = pList;
         this.iList = iList;
         this.pContext = context;
@@ -30,16 +33,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgProduct;
         ImageButton btnWish;
-        TextView tvProduct, tvPlace, tvPrice;
+        TextView tvProduct, tvPrice;
 
         ViewHolder(View itemView) {
             super(itemView);
 
-            imgProduct = itemView.findViewById(R.id.imgProduct);
-            btnWish = itemView.findViewById(R.id.btnWish);
-            tvProduct = itemView.findViewById(R.id.tvProduct);
-            tvPlace = itemView.findViewById(R.id.tvPlace);
-            tvPrice = itemView.findViewById(R.id.tvPrice);
+            imgProduct = (ImageView) itemView.findViewById(R.id.imgProduct);
+            btnWish = (ImageButton) itemView.findViewById(R.id.btnWish);
+            tvProduct = (TextView) itemView.findViewById(R.id.tvProduct);
+            tvPrice = (TextView) itemView.findViewById(R.id.tvPrice);
 
             btnWish.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -55,6 +57,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     //뷰홀더 생성
     @Override
     public ProductAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d(TAG, "태그 onCreateViewHolder 들어옴");
         Context context = parent.getContext();
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.product, parent, false);
@@ -66,9 +69,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         // 제품 정보 가져오기
         String prodTitle = pList.get(position)[0];
         holder.tvProduct.setText(prodTitle);
-        String prodPlace = pList.get(position)[1];
-        holder.tvPlace.setText(prodPlace);
-        String prodPrice = pList.get(position)[2];
+        String prodPrice = pList.get(position)[1];
         holder.tvPrice.setText(prodPrice);
 
         Uri imgUri = iList.get(position);
@@ -87,7 +88,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     //아이템 개수 조회
     @Override
     public int getItemCount() {
-        return pList.size();
+        Log.e("productadapter", "getitemcout");
+        return iList == null ? 0 : iList.size();
     }
 
 }
