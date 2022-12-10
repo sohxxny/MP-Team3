@@ -45,15 +45,11 @@
             android:layout_marginTop="5dp"
             android:background="#E8E8E8" />
 
-        <ScrollView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/wishRecycler"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="600dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </ScrollView>
     </LinearLayout>
 
 </FrameLayout>

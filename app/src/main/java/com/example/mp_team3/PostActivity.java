@@ -152,6 +152,7 @@ public class PostActivity extends AppCompatActivity {
                 Toast.makeText(PostActivity.this, category, Toast.LENGTH_SHORT).show();
                 alertInfoEmpty(category);
                 // ################ 완료 버튼 클릭하면 실행할 것 ################
+
             }
         });
     }

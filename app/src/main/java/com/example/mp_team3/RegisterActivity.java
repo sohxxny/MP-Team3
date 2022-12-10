@@ -135,8 +135,6 @@ public class RegisterActivity extends AppCompatActivity {
                             StorageReference storageReference = mStorage.getReference()
                                     .child("usersprofileImages/" + uid + ".jpg");
 
-                            Log.e("defaultUri", imageUri.toString());
-
                             if (imageUri != null) {
                                 storageReference.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                     @Override
