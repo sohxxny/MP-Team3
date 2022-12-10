@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -49,7 +50,8 @@ public class ProfileEdit extends AppCompatActivity {
     private FirebaseUser user;
     String uid;
     Uri imageUri = null;
-    String profExist = null;
+    StorageReference storageRef;
+    StorageReference profRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,10 @@ public class ProfileEdit extends AppCompatActivity {
         uid = user.getUid();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        storageRef = storage.getReference();
+        profRef = storageRef.child("usersprofileImages/" + uid + ".jpg");
+
+        //원래 닉네임 받아오기
         DocumentReference docRef = db.collection("users").document(uid);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -76,26 +82,26 @@ public class ProfileEdit extends AppCompatActivity {
                     if (document.exists()) {
                         String oldNick = document.getData().get("nickname").toString();
                         etProfNick.setText(oldNick);
-                        profExist = document.getData().get("profileImageUrl").toString();
                     }
                 }
             }
         });
 
-//        StorageReference storageRef = storage.getReference();
-//        StorageReference riverRef = storageRef.child("usersprofileImages/" + uid + ".jpg");
-//        riverRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void unused) {
-//
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//
-//            }
-//        });
-
+        //원래 이미지 받아오기
+        profRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d("profileImage" , "image download success");
+                Glide.with(getApplicationContext())
+                        .load(uri)
+                        .into(imgProfChange);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("profileImage" , "image download fail");
+            }
+        });
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -111,6 +117,7 @@ public class ProfileEdit extends AppCompatActivity {
                 case R.id.btnProfCancle:
                     Fragment_my fragmentMy = new Fragment_my();
                     getSupportFragmentManager().beginTransaction().add(R.id.myLinear,fragmentMy).commit();
+                    finish();
                     break;
             }
         }
@@ -140,10 +147,6 @@ public class ProfileEdit extends AppCompatActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-                        if (profExist == null) {
-                            profExist = "AddProfImg";
-                        };
                     }
                 }
             });
@@ -167,28 +170,9 @@ public class ProfileEdit extends AppCompatActivity {
             }
         });
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        StorageReference riverRef = storageRef.child("usersprofileImages/" + uid + ".jpg");
-
-        if (profExist != null && profExist != "AddProfImg") {
-
-            riverRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-
-                }
-            });
-
-        }
 
         if (imageUri != null) {
-            UploadTask uploadTask = riverRef.putFile(imageUri);
+            UploadTask uploadTask = profRef.putFile(imageUri);
 
             uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -202,7 +186,11 @@ public class ProfileEdit extends AppCompatActivity {
         }
 
         Fragment_my fragmentMy = new Fragment_my();
-        getSupportFragmentManager().beginTransaction().add(R.id.myLinear,fragmentMy).commit();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.myLinear, fragmentMy);
+        fragmentTransaction.commit();
+        finish();
     }
 
 }

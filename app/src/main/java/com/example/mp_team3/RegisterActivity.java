@@ -42,7 +42,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    static final int PICK_FROM_ALBUM = 1;
     static final String TAG = "RegisterActivity";
     Uri imageUri = null;
     FirebaseStorage mStorage;
