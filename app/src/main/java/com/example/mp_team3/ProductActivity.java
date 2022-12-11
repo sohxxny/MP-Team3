@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +37,8 @@ public class ProductActivity extends AppCompatActivity {
     String detail;
     String sellerId;
     String prodPic;
+    String endTime;
+    String postingTime;
     ImageView imgItemPic;
     CircleImageView imgSellerProf;
     TextView tvSeller,tvProdTitle, tvProdPrice, tvProdCategory, tvProdDetail;
@@ -42,6 +46,7 @@ public class ProductActivity extends AppCompatActivity {
     FirebaseFirestore db;
     String hasProf;
     int postNum;
+    Button btnInAuction;
     private final String TAG = "ProductActivity";
 
     @Override
@@ -57,6 +62,8 @@ public class ProductActivity extends AppCompatActivity {
         sellerId = intent.getStringExtra("sellerId");
         postNum = intent.getIntExtra("postNum", 0);
         prodPic = intent.getStringExtra("prodPic");
+        endTime = intent.getStringExtra("endTime");
+        postingTime = intent.getStringExtra("postingTime");
 
         tvSeller = (TextView) findViewById(R.id.tvSeller);
         tvProdTitle = (TextView) findViewById(R.id.tvProdTitle);
@@ -65,10 +72,11 @@ public class ProductActivity extends AppCompatActivity {
         tvProdDetail = (TextView) findViewById(R.id.tvProdDetail);
         imgSellerProf = (CircleImageView) findViewById(R.id.imgSellerProf);
         imgItemPic = (ImageView) findViewById(R.id.imgItemPic);
+        btnInAuction = (Button) findViewById(R.id.btnInAuction);
 
         //제품 정보 세팅
         tvProdTitle.setText(title);
-        tvProdPrice.setText(price);
+        tvProdPrice.setText("최소 금액: " + price);
         tvProdCategory.setText(category);
         tvProdDetail.setText(detail);
         Glide.with(this)
@@ -118,7 +126,19 @@ public class ProductActivity extends AppCompatActivity {
             }
         });
 
-        //제품 사진 받아오기
+        //경매 참여 버튼
+        btnInAuction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProductActivity.this, AuctionActivity.class);
+                intent.putExtra("endTime", endTime);
+                intent.putExtra("postingTime", postingTime);
+                intent.putExtra("price", price);
+                intent.putExtra("title", title);
+                intent.putExtra("prodPic", prodPic);
+                startActivity(intent);
+            }
+        });
 
     }
 }
