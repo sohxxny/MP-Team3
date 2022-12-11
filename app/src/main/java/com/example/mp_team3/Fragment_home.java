@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,6 +24,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,11 +42,12 @@ public class Fragment_home extends Fragment {
     FloatingActionButton createPost;
     RecyclerView homeRecycler;
     ProductAdapter adapter;
-    ArrayList<String[]> pList = new ArrayList<>();
-    ArrayList<Uri> iList = new ArrayList<>();
-    public static int postNum;
+    ArrayList<PostModel> pList;
     View view;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseDatabase db;
+    DatabaseReference dbRef;
+    RecyclerView.LayoutManager layoutManager;
+    AppCompatButton btnGotoSearch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +56,7 @@ public class Fragment_home extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home,container,false);
         createPost = (FloatingActionButton) view.findViewById(R.id.fabCreatePost);
+        btnGotoSearch = (AppCompatButton) view.findViewById(R.id.btnGotoSearch);
 
         // FloatingActionButton 누르면 PostActivity로 이동
         createPost.setOnClickListener(new View.OnClickListener() {
@@ -59,66 +68,35 @@ public class Fragment_home extends Fragment {
             }
         });
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
+        homeRecycler = (RecyclerView) view.findViewById(R.id.homeRecycler);
+        homeRecycler.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getContext());
+        homeRecycler.setLayoutManager(layoutManager);
+        pList = new ArrayList<>();
+        //iList = new ArrayList<>();
 
-        DocumentReference docRefPostNum = db.collection("posts").document("postNum");
-        //post 개수 가져오기
-        docRefPostNum.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db = FirebaseDatabase.getInstance();
+        dbRef = db.getReference("posts");
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        postNum = Integer.parseInt(document.getData().get("count").toString());
-                    }
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                pList.clear();
+                //iList.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    PostModel postModel = dataSnapshot.getValue(PostModel.class);
+                    pList.add(postModel);
+
                 }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
 
-        for (int i = 0; i < postNum; i++) {
-            //포스트 추가
-            DocumentReference docRefPost = db.collection("posts").document("POST" + "_" + i);
-            docRefPost.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            String title = document.getData().get("title").toString();
-                            String price = document.getData().get("price").toString();
-                            String [] productInfo = {title, price};
-                            pList.add(productInfo);
-                        }
-                    }
-                }
-            });
-            //포스트 이미지 추가
-            StorageReference storageRef = storage.getReference();
-            StorageReference imgRef = storageRef.child("postImages/" + "POST_" + i + "_0.jpg");
-            imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Log.d("itemImage" , "itemImage download success");
-                    iList.add(uri);
-                    System.out.println(iList);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-
-                }
-            });
-            Log.e("fragement_home", String.valueOf(i));
-        }
-
-        homeRecycler = (RecyclerView) view.findViewById(R.id.homeRecycler);
-        homeRecycler.setHasFixedSize(true);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        homeRecycler.setLayoutManager(layoutManager);
-        homeRecycler.setItemAnimator(new DefaultItemAnimator());
-
-        adapter = new ProductAdapter(pList, iList, getContext());
+        adapter = new ProductAdapter(pList, getContext());
         homeRecycler.setAdapter(adapter);
 
         return view;
