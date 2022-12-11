@@ -1,5 +1,6 @@
 package com.example.mp_team3;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,6 +50,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         Glide.with(holder.itemView)
                 .load(Uri.parse(pList.get(position).getProdPic()))
                 .into(holder.imgProduct);
+
         //클릭시 제품으로 이동 - 제품 액티비티와 연결 필요
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -77,8 +77,10 @@
         android:textColor="#FFFFFF" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/aucRecycler"
         android:layout_width="match_parent"
-        android:layout_height="400dp">
+        android:layout_height="400dp"
+        android:paddingTop="20dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -91,19 +93,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="horizontal">
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/aucCurUserProf"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="0dp"
+            android:src="@drawable/user"></de.hdodenhof.circleimageview.CircleImageView>
+
         <EditText
-            android:id="@+id/editTextNumber"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/search_border"
-            android:inputType="number" />
+            android:id="@+id/etAucPrice"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/search_border" />
 
         <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:id="@+id/btnAucSend"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:background="@android:color/transparent"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/arrow_circle_up" />
