@@ -85,7 +85,6 @@ public class Fragment_home extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     PostModel postModel = dataSnapshot.getValue(PostModel.class);
                     pList.add(postModel);
-                    System.out.println(postModel.getTitle() + "개빡치네");
 
                 }
                 adapter.notifyDataSetChanged();
