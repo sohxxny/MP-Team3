@@ -244,7 +244,7 @@ public class PostActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         imgUri = uri;
-                                        PostModel postModel = new PostModel(user.getUid(), imgUri.toString(), title, price, category, postingTime, endTime, detail);
+                                        PostModel postModel = new PostModel(user.getUid(), imgUri.toString(), title, price, category, postingTime, endTime, detail, postNum);
                                         mDatabase.child("posts").child("POST" + "_" + postNum).setValue(postModel);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
