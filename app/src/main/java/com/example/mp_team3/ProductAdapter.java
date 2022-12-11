@@ -1,6 +1,7 @@
 package com.example.mp_team3;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,7 +52,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent intent = new Intent(it)
+                String title = pList.get(holder.getAbsoluteAdapterPosition()).getTitle();
+                String price = pList.get(holder.getAbsoluteAdapterPosition()).getPrice();
+                String category = pList.get(holder.getAbsoluteAdapterPosition()).getCategory();
+                String detail = pList.get(holder.getAbsoluteAdapterPosition()).getDetail();
+                String sellerId = pList.get(holder.getAbsoluteAdapterPosition()).getUid();
+                int postNum = pList.get(holder.getAbsoluteAdapterPosition()).getPostNum();
+                String prodPic = pList.get(holder.getAbsoluteAdapterPosition()).getProdPic();
+                Intent intent = new Intent(pContext, ProductActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("price", price);
+                intent.putExtra("catetory", category);
+                intent.putExtra("detail", detail);
+                intent.putExtra("sellerId",sellerId);
+                intent.putExtra("postNum", postNum);
+                intent.putExtra("prodPic", prodPic);
+                pContext.startActivity(intent);
             }
         });
     }

@@ -11,10 +11,11 @@ public class PostModel {
     public String endTime;
     public String detail;
     public String prodPic;
+    int postNum;
 
     public PostModel() {};
 
-    public PostModel(String uid, String prodPic, String title, String price, String category, String postingTime, String endTime, String detail) {
+    public PostModel(String uid, String prodPic, String title, String price, String category, String postingTime, String endTime, String detail, int postNum) {
         this.uid = uid;
         this.prodPic = prodPic;
         this.title = title;
@@ -23,6 +24,7 @@ public class PostModel {
         this.postingTime = postingTime;
         this.endTime = endTime;
         this.detail = detail;
+        this.postNum = postNum;
     }
 
     public String getUid() {
@@ -55,6 +57,10 @@ public class PostModel {
 
     public String getDetail() {
         return this.detail;
+    }
+
+    public int getPostNum() {
+        return this.postNum;
     }
 
 }
