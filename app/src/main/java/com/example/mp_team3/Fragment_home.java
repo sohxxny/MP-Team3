@@ -4,28 +4,50 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Fragment_home extends Fragment {
-    View view;
     FloatingActionButton createPost;
-    AppCompatButton btnGotoSearch;
     RecyclerView homeRecycler;
-    ArrayList<String[]> pList;
-    ArrayList<Uri> iList;
+    ProductAdapter adapter;
+    ArrayList<PostModel> pList;
+    View view;
+    FirebaseDatabase db;
+    DatabaseReference dbRef;
+    RecyclerView.LayoutManager layoutManager;
+    AppCompatButton btnGotoSearch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,13 +57,6 @@ public class Fragment_home extends Fragment {
         view = inflater.inflate(R.layout.fragment_home,container,false);
         createPost = (FloatingActionButton) view.findViewById(R.id.fabCreatePost);
         btnGotoSearch = (AppCompatButton) view.findViewById(R.id.btnGotoSearch);
-
-        //
-        homeRecycler = (RecyclerView) view.findViewById(R.id.homeRecycler);
-        homeRecycler.setLayoutManager(new LinearLayoutManager(this.getContext()));
-
-        ProductAdapter adapter = new ProductAdapter(pList, iList, getActivity().getApplicationContext());
-        homeRecycler.setAdapter(adapter);
 
         // FloatingActionButton 누르면 PostActivity로 이동
         createPost.setOnClickListener(new View.OnClickListener() {
@@ -53,20 +68,38 @@ public class Fragment_home extends Fragment {
             }
         });
 
-        // 검색창 누르면 검색 페이지로 이동
-        btnGotoSearch.setOnClickListener(new View.OnClickListener() {
+        homeRecycler = (RecyclerView) view.findViewById(R.id.homeRecycler);
+        homeRecycler.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getContext());
+        homeRecycler.setLayoutManager(layoutManager);
+        pList = new ArrayList<>();
+        //iList = new ArrayList<>();
+
+        db = FirebaseDatabase.getInstance();
+        dbRef = db.getReference("posts");
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), Search.class);
-                startActivity(intent);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                pList.clear();
+                //iList.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    PostModel postModel = dataSnapshot.getValue(PostModel.class);
+                    pList.add(postModel);
+
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
 
+        adapter = new ProductAdapter(pList, getContext());
+        homeRecycler.setAdapter(adapter);
 
         return view;
     }
-
-
-
 
 }

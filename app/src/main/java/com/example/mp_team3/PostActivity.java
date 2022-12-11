@@ -37,6 +37,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -78,6 +81,8 @@ public class PostActivity extends AppCompatActivity {
     String endTime;
     String detail;
     int postNum;
+    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+    Uri imgUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,34 +215,6 @@ public class PostActivity extends AppCompatActivity {
                 endTime = end.toString();
                 detail = etExplain.getText().toString();
 
-                //post 개수 받아오기
-//                DocumentReference docRef = db.collection("posts").document("postNum");
-//                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            DocumentSnapshot document = task.getResult();
-//                            if (document != null) {
-//                                if (document.exists()) {
-//                                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-//                                    if (document.getData() != null) {
-//                                        postNum = Integer.parseInt(document.getData().get("count").toString());
-//                                    }
-//                                } else {
-//                                    Log.d(TAG, "No such document");
-//                                }
-//                            }
-//
-//                        } else {
-//                            Log.d(TAG, "get failed with ", task.getException());
-//                        }
-//                    }
-//                });
-
-
-                //파이어 베이스 게시물 등록 및 postNum 업데이트
-                PostModel postModel = new PostModel(user.getUid(), title, price, category, postingTime, endTime, detail);
-                db.collection("posts").document("POST" + "_" + postNum).set(postModel);
                 docRef.update("count",postNum+1 ).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -250,16 +227,32 @@ public class PostActivity extends AppCompatActivity {
                     }
                 });
 
-                //스토리지에 사진 올리기기
+               // 스토리지에 사진 올리기기
                 FirebaseStorage storage = FirebaseStorage.getInstance();
 
                 for (int i = 0; i < uriList.size(); i++) {
                     StorageReference storageRef = storage.getReference()
                             .child("postImages/" + "POST_" + postNum + "_" + i + ".jpg");
+
+                    int getI = i;
                     storageRef.putFile(uriList.get(i)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            //db에 포스트 추가
+                            ////첫 사진 받아오기 및 database 추가
+                            if (getI == 0) {
+                                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        imgUri = uri;
+                                        PostModel postModel = new PostModel(user.getUid(), imgUri.toString(), title, price, category, postingTime, endTime, detail);
+                                        mDatabase.child("posts").child("POST" + "_" + postNum).setValue(postModel);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                    }
+                                });
+                            }
                         }
                     });
                 }
