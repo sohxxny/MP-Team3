@@ -68,6 +68,16 @@ public class Fragment_home extends Fragment {
             }
         });
 
+        // 검색창 누르면 검색 페이지로 이동
+        btnGotoSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), Search.class);
+                startActivity(intent);
+            }
+        });
+
+
         homeRecycler = (RecyclerView) view.findViewById(R.id.homeRecycler);
         homeRecycler.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
