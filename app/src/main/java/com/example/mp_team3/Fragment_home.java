@@ -77,7 +77,6 @@ public class Fragment_home extends Fragment {
             }
         });
 
-
         homeRecycler = (RecyclerView) view.findViewById(R.id.homeRecycler);
         homeRecycler.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());

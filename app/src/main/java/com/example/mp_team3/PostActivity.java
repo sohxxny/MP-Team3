@@ -200,8 +200,11 @@ public class PostActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(PostActivity.this, category, Toast.LENGTH_SHORT).show();
-                alertInfoEmpty(category);
-                // ################ 완료 버튼 클릭하면 실행할 것 ################
+                String str1 = etTitle.getText().toString();
+                String str2 = etPrice.getText().toString();
+                String str3 = tvTime.getText().toString();
+                String str4 = etExplain.getText().toString();
+                String str5 = category;
 
                 //파이어스토어 연결
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -334,28 +337,6 @@ public class PostActivity extends AppCompatActivity {
                     }
                 }
             }
-        }
-    }
-
-    // 글쓰기 정보 미기입 시 경고창
-    void alertInfoEmpty(String category) {
-        String str1 = etTitle.getText().toString();
-        String str2 = etPrice.getText().toString();
-        String str3 = tvTime.getText().toString();
-        String str4 = etExplain.getText().toString();
-        String str5 = category;
-
-        if (str5.equals("카테고리") || str1.length() == 0 || str2.length() == 0
-                || str3.length() == 0 || str4.length() == 0) {
-            AlertDialog.Builder msgBuilder = new AlertDialog.Builder(PostActivity.this)
-                    .setMessage("정보를 빠짐없이 기입해주세요.")
-                    .setNegativeButton("확인", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                        }
-                    });
-            AlertDialog msgDlg = msgBuilder.create();
-            msgDlg.show();
         }
     }
 
