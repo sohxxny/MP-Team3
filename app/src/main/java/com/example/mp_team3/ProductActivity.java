@@ -136,6 +136,7 @@ public class ProductActivity extends AppCompatActivity {
                 intent.putExtra("price", price);
                 intent.putExtra("title", title);
                 intent.putExtra("prodPic", prodPic);
+                intent.putExtra("postNum", postNum);
                 startActivity(intent);
             }
         });
