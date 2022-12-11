@@ -114,7 +114,6 @@ public class Search extends AppCompatActivity {
                                         }
                                     }
                                 });
-                                // ############### 새로고침 하는 코드 필요 ###############
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -137,13 +136,14 @@ public class Search extends AppCompatActivity {
                 if (searchItem.equals("")) {
                     Toast.makeText(Search.this, "검색 키워드를 입력해주세요", Toast.LENGTH_SHORT).show();
                 } else {
-                    // 파이어베이스에서 제목에 검색 단어가 포함된 post 불러오기
-
-                    // List 리사이클러뷰에 정렬하기
-
                     // 검색한 단어를 users의 searchItem 배열에 저장
                     DocumentReference docRef = db.collection("users").document(user.getUid());
                     docRef.update("searchItem", FieldValue.arrayUnion(searchItem));
+
+                    // 새로운 액티비티 실행
+                    Intent intent = new Intent(Search.this, SearchResult.class);
+                    intent.putExtra("searchItem", searchItem);
+                    startActivity(intent);
                 }
             }
         });

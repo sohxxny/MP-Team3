@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     FirebaseAuth mAuth; // 파이어베이스
     BottomNavigationView bottomNavigationView;  // 바텀네비게이션 뷰
-    Button logout;  // 로그아웃 버튼 (임시)
     FragmentManager fragmentManager;
     Fragment fragment_home, fragment_chat, fragment_wish, fragment_my;
 
@@ -33,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         bottomNavigationView = findViewById(R.id.bottomNavi);
-        logout = (Button)findViewById(R.id.logout); // 로그아웃 버튼 (임시)
 
         // 파이어베이스 사용자 정보 가져오기
         mAuth = FirebaseAuth.getInstance();
@@ -47,17 +45,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-
-        // 로그아웃 버튼 (임시)
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         fragment_home = new Fragment_home();
         // 처음 화면

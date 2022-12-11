@@ -1,5 +1,6 @@
 package com.example.mp_team3;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
@@ -48,6 +50,8 @@ public class Fragment_my extends Fragment {
     String getNick;
     TextView tvMyNick;
     CircleImageView imgProfile;
+    ImageButton btnLogout;
+    FirebaseAuth mAuth;
     private static final String TAG = "Fragment_my";
 
     @Override
@@ -57,11 +61,44 @@ public class Fragment_my extends Fragment {
         view = inflater.inflate(R.layout.fragment_my, container, false);
         view.findViewById(R.id.btnMyEdit).setOnClickListener(onClickListener);
 
+        // 파이어베이스 사용자 정보 받아오기
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        // 로그인 여부 확인하기
+        if (user == null) {
+            Intent intent = new Intent(getContext(), LoginActivity.class);
+            startActivity(intent);
+        }
+
         //닉네임 받아오기
         tvMyNick = view.findViewById(R.id.tvMyNick);
         imgProfile = view.findViewById(R.id.imgProfile);
+        btnLogout = view.findViewById(R.id.btnLogout);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder msgBuilder = new AlertDialog.Builder(getContext())
+                        .setMessage("로그아웃하시겠습니까?")
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                FirebaseAuth.getInstance().signOut();
+                                Intent intent = new Intent(getContext(), LoginActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        });
+                AlertDialog msgDlg = msgBuilder.create();
+                msgDlg.show();
+            }
+        });
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("users").document(user.getUid());
 
