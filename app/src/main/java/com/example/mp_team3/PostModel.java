@@ -1,5 +1,7 @@
 package com.example.mp_team3;
 
+import android.net.Uri;
+
 public class PostModel {
     public String uid;
     public String title;
@@ -8,9 +10,13 @@ public class PostModel {
     public String postingTime;
     public String endTime;
     public String detail;
+    public String prodPic;
 
-    public PostModel(String uid, String title, String price, String category, String postingTime, String endTime, String detail) {
+    public PostModel() {};
+
+    public PostModel(String uid, String prodPic, String title, String price, String category, String postingTime, String endTime, String detail) {
         this.uid = uid;
+        this.prodPic = prodPic;
         this.title = title;
         this.price = price;
         this.category = category;
@@ -18,4 +24,37 @@ public class PostModel {
         this.endTime = endTime;
         this.detail = detail;
     }
+
+    public String getUid() {
+        return this.uid;
+    }
+
+    public String getProdPic() {
+        return this.prodPic;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getPrice(){
+        return price;
+    }
+
+    public String getCategory(){
+        return this.category;
+    }
+
+    public String getPostingTime(){
+        return this.postingTime;
+    }
+
+    public String getEndTime(){
+        return this.endTime;
+    }
+
+    public String getDetail() {
+        return this.detail;
+    }
+
 }

@@ -19,15 +19,48 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
-    private ArrayList<String[]> pList;
-    private ArrayList<Uri> iList;
+    private ArrayList<PostModel> pList;
     private Context pContext;
     static final String TAG = "ProductAdapter";
 
-    public ProductAdapter(ArrayList<String[]> pList, ArrayList<Uri> iList, Context context) {
+    public ProductAdapter(ArrayList<PostModel> pList, Context context) {
         this.pList = pList;
-        this.iList = iList;
         this.pContext = context;
+    }
+
+    @NonNull
+    //뷰홀더 생성
+    @Override
+    public ProductAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d(TAG, "태그 onCreateViewHolder 들어옴");
+        Context context = parent.getContext();
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.product, parent, false);
+        return new ProductAdapter.ViewHolder(view);
+    }
+    //뷰 재활용 메소드
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        // 제품 정보 가져오기
+        holder.tvProduct.setText(pList.get(position).getTitle());
+        holder.tvPrice.setText(pList.get(position).getPrice());
+
+        Glide.with(holder.itemView)
+                .load(Uri.parse(pList.get(position).getProdPic()))
+                .into(holder.imgProduct);
+        //클릭시 제품으로 이동 - 제품 액티비티와 연결 필요
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Intent intent = new Intent(it)
+            }
+        });
+    }
+    //아이템 개수 조회
+    @Override
+    public int getItemCount() {
+        //Log.e("productadapter", );
+        return pList == null ? 0 : pList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -51,45 +84,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 }
             });
         }
-    }
-
-    @NonNull
-    //뷰홀더 생성
-    @Override
-    public ProductAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d(TAG, "태그 onCreateViewHolder 들어옴");
-        Context context = parent.getContext();
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.product, parent, false);
-        return new ProductAdapter.ViewHolder(view);
-    }
-    //뷰 재활용 메소드
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // 제품 정보 가져오기
-        String prodTitle = pList.get(position)[0];
-        holder.tvProduct.setText(prodTitle);
-        String prodPrice = pList.get(position)[1];
-        holder.tvPrice.setText(prodPrice);
-
-        Uri imgUri = iList.get(position);
-        Glide.with(pContext)
-                .load(imgUri)
-                .into(holder.imgProduct);
-
-        //클릭시 제품으로 이동 - 제품 액티비티와 연결 필요
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Intent intent = new Intent(it)
-            }
-        });
-    }
-    //아이템 개수 조회
-    @Override
-    public int getItemCount() {
-        Log.e("productadapter", "getitemcout");
-        return iList == null ? 0 : iList.size();
     }
 
 }
