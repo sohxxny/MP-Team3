@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -48,6 +49,7 @@ public class Fragment_home extends Fragment {
     DatabaseReference dbRef;
     RecyclerView.LayoutManager layoutManager;
     AppCompatButton btnGotoSearch;
+    ImageButton btnMenu;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,6 +59,7 @@ public class Fragment_home extends Fragment {
         view = inflater.inflate(R.layout.fragment_home,container,false);
         createPost = (FloatingActionButton) view.findViewById(R.id.fabCreatePost);
         btnGotoSearch = (AppCompatButton) view.findViewById(R.id.btnGotoSearch);
+        btnMenu = (ImageButton) view.findViewById(R.id.btnMenu);
 
         // FloatingActionButton 누르면 PostActivity로 이동
         createPost.setOnClickListener(new View.OnClickListener() {
