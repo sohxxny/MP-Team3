@@ -59,6 +59,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 String sellerId = pList.get(holder.getAbsoluteAdapterPosition()).getUid();
                 int postNum = pList.get(holder.getAbsoluteAdapterPosition()).getPostNum();
                 String prodPic = pList.get(holder.getAbsoluteAdapterPosition()).getProdPic();
+                String endTime = pList.get(holder.getAbsoluteAdapterPosition()).getEndTime();
+                String postingTime = pList.get(holder.getAbsoluteAdapterPosition()).getPostingTime();
                 Intent intent = new Intent(pContext, ProductActivity.class);
                 intent.putExtra("title", title);
                 intent.putExtra("price", price);
@@ -67,6 +69,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 intent.putExtra("sellerId",sellerId);
                 intent.putExtra("postNum", postNum);
                 intent.putExtra("prodPic", prodPic);
+                intent.putExtra("endTime", endTime);
+                intent.putExtra("postingTime", postingTime);
                 pContext.startActivity(intent);
             }
         });
