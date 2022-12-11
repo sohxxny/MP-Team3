@@ -15,8 +15,8 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.ViewHolder>{
-    private ArrayList<Uri> mData = null ;
-    private Context mContext = null ;
+    private ArrayList<Uri> mData = null;
+    private Context mContext = null;
 
     public interface OnItemClickListener {
         void onItemClick(View v, int position);
@@ -29,7 +29,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
 
     // 생성자에서 데이터 리스트 객체, Context를 전달받음.
     MultiImageAdapter(ArrayList<Uri> list, Context context) {
-        mData = list ;
+        mData = list;
         mContext = context;
     }
 
@@ -75,7 +75,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     // onBindViewHolder() - position에 해당하는 데이터를 뷰홀더의 아이템뷰에 표시.
     @Override
     public void onBindViewHolder(MultiImageAdapter.ViewHolder holder, int position) {
-        Uri image_uri = mData.get(position) ;
+        Uri image_uri = mData.get(position);
         Glide.with(mContext)
                 .load(image_uri)
                 .into(holder.image);

@@ -37,6 +37,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -134,6 +135,8 @@ public class RegisterActivity extends AppCompatActivity {
                             StorageReference storageReference = mStorage.getReference()
                                     .child("usersprofileImages/" + uid + ".jpg");
 
+                            ArrayList<String> searchItem = null;
+
                             if (imageUri != null) {
                                 storageReference.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                     @Override
@@ -141,13 +144,13 @@ public class RegisterActivity extends AppCompatActivity {
                                         final Task<Uri> imageUrl = task.getResult().getStorage().getDownloadUrl();
                                         while (!imageUrl.isComplete()) ;
 
-                                        UserModel userModel = new UserModel(nickname, imageUrl.getResult().toString(), uid);
+                                        UserModel userModel = new UserModel(nickname, imageUrl.getResult().toString(), uid, searchItem);
 
                                         db.collection("users").document(user.getUid()).set(userModel);
                                     }
                                 });
                             } else {
-                                UserModel userModel = new UserModel(nickname, null, uid);
+                                UserModel userModel = new UserModel(nickname, null, uid, searchItem);
                                 db.collection("users").document(user.getUid()).set(userModel);
                             }
 

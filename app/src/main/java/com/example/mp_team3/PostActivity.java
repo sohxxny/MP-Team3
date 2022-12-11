@@ -144,8 +144,6 @@ public class PostActivity extends AppCompatActivity {
                 postCancel();
             }
         });
-        // 백버튼 구현해야 함
-
 
         // 앨범으로 이동하는 버튼
         btnPicture.setOnClickListener(new View.OnClickListener() {
@@ -278,7 +276,7 @@ public class PostActivity extends AppCompatActivity {
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, month);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            String myFormat = "yyyy년 MM월 dd일 이후";    // 출력형식   2021/07/26
+            String myFormat = "yyyy년 MM월 dd일 이후";
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.KOREA);
             tvTime.setText(sdf.format(myCalendar.getTime()));
         }
@@ -347,7 +345,8 @@ public class PostActivity extends AppCompatActivity {
         String str4 = etExplain.getText().toString();
         String str5 = category;
 
-        if (str5 == "카테고리") {
+        if (str5.equals("카테고리") || str1.length() == 0 || str2.length() == 0
+                || str3.length() == 0 || str4.length() == 0) {
             AlertDialog.Builder msgBuilder = new AlertDialog.Builder(PostActivity.this)
                     .setMessage("정보를 빠짐없이 기입해주세요.")
                     .setNegativeButton("확인", new DialogInterface.OnClickListener() {
