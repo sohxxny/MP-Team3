@@ -2,7 +2,7 @@ package com.example.mp_team3;
 
 import android.net.Uri;
 
-public class PostModel {
+public class PostModel implements Comparable<PostModel> {
     public String uid;
     public String title;
     public String price;
@@ -63,4 +63,14 @@ public class PostModel {
         return this.postNum;
     }
 
+    @Override
+    public int compareTo(PostModel postModel) {
+        if (postModel.postNum < postNum) {
+            return 1;
+        } else if (postModel.postNum > postNum) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 }

@@ -23,7 +23,8 @@
                 android:id="@+id/imgWish"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/profile" />
 
         </androidx.cardview.widget.CardView>
 
@@ -42,23 +43,24 @@
                 android:layout_marginBottom="3dp"
                 android:text="제목"
                 android:textColor="#6B6B6B"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/tvWishItemPlace"
+                android:id="@+id/tvWishItemCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
-                android:text="지역"
+                android:text="카테고리"
                 android:textColor="#A3A3A3"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
             <TextView
                 android:id="@+id/tvWishItemPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="가격"
-                android:textColor="#7E7E7E" />
+                android:textColor="#7E7E7E"
+                android:textSize="16sp" />
 
             <ImageButton
                 android:id="@+id/btnUnwish"

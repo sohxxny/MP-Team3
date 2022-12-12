@@ -264,13 +264,9 @@ public class PostActivity extends AppCompatActivity {
                     });
                 }
 
-                Fragment_home fragmentHome = new Fragment_home();
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.postLinear, fragmentHome);
-                fragmentTransaction.commit();
-
-                finish();
+                Intent intent = new Intent(PostActivity.this, MainActivity.class);
+                startActivity(intent);
+                //finish();
             }
         });
     }

@@ -8,10 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Fragment_home extends Fragment {
     FloatingActionButton createPost;
@@ -50,6 +54,7 @@ public class Fragment_home extends Fragment {
     RecyclerView.LayoutManager layoutManager;
     AppCompatButton btnGotoSearch;
     ImageButton btnMenu;
+    SwipeRefreshLayout homeSwipe;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,7 +64,6 @@ public class Fragment_home extends Fragment {
         view = inflater.inflate(R.layout.fragment_home,container,false);
         createPost = (FloatingActionButton) view.findViewById(R.id.fabCreatePost);
         btnGotoSearch = (AppCompatButton) view.findViewById(R.id.btnGotoSearch);
-        btnMenu = (ImageButton) view.findViewById(R.id.btnMenu);
 
         // FloatingActionButton 누르면 PostActivity로 이동
         createPost.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +84,7 @@ public class Fragment_home extends Fragment {
             }
         });
 
+
         homeRecycler = (RecyclerView) view.findViewById(R.id.homeRecycler);
         homeRecycler.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
@@ -97,6 +102,7 @@ public class Fragment_home extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     PostModel postModel = dataSnapshot.getValue(PostModel.class);
                     pList.add(postModel);
+                    Collections.sort(pList);
 
                 }
                 adapter.notifyDataSetChanged();
@@ -111,7 +117,29 @@ public class Fragment_home extends Fragment {
         adapter = new ProductAdapter(pList, getContext());
         homeRecycler.setAdapter(adapter);
 
+        homeSwipe = (SwipeRefreshLayout) view.findViewById(R.id.homeSwipe);
+        homeSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+                ft.commit();
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        homeSwipe.setRefreshing(false);
+                    }
+                }, 500);
+            }
+        });
+
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+        ft.detach(this).attach(this).commit();
+    }
 }

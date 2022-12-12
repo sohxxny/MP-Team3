@@ -33,16 +33,24 @@
             android:gravity="bottom"
             android:orientation="vertical"
             android:paddingLeft="10dp"
-            android:paddingBottom="25dp">
+            android:paddingBottom="15dp">
 
             <TextView
                 android:id="@+id/tvProduct"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="2dp"
                 android:text="김은진"
                 android:textColor="#6B6B6B"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:text="TextView"
+                android:textColor="#ACACAC" />
 
             <TextView
                 android:id="@+id/tvPrice"

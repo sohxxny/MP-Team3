@@ -75,7 +75,9 @@ public class Search extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     searchList.clear();
                     searchList = (ArrayList<String>) (ArrayList<?>) document.getData().get("searchItem");
-                    Collections.reverse(searchList);;   // 마지막 검색한 키워드가 앞으로 나오도록 뒤집기
+                    if (searchList != null) {
+                        Collections.reverse(searchList);;   // 마지막 검색한 키워드가 앞으로 나오도록 뒤집기
+                    }
                     // 리사이클러뷰에 최근 검색어 나열
                     adapter = new SearchItemAdapter(searchList) ;
                     recyclerSearch.setAdapter(adapter) ;
@@ -88,6 +90,8 @@ public class Search extends AppCompatActivity {
         btnSearchCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(Search.this, MainActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
@@ -114,6 +118,11 @@ public class Search extends AppCompatActivity {
                                         }
                                     }
                                 });
+                                finish();//인텐트 종료
+                                overridePendingTransition(0, 0);//인텐트 효과 없애기
+                                Intent intent = getIntent(); //인텐트
+                                startActivity(intent); //액티비티 열기
+                                overridePendingTransition(0, 0);//인텐트 효과 없애기
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -140,11 +149,17 @@ public class Search extends AppCompatActivity {
                     DocumentReference docRef = db.collection("users").document(user.getUid());
                     docRef.update("searchItem", FieldValue.arrayUnion(searchItem));
 
-                    // 새로운 액티비티 실행
+                     //새로운 액티비티 실행
                     Intent intent = new Intent(Search.this, SearchResult.class);
                     intent.putExtra("searchItem", searchItem);
                     startActivity(intent);
                 }
+
+//                finish();//인텐트 종료
+//                overridePendingTransition(0, 0);//인텐트 효과 없애기
+//                Intent intent = getIntent(); //인텐트
+//                startActivity(intent); //액티비티 열기
+//                overridePendingTransition(0, 0);
             }
         });
 
@@ -152,9 +167,11 @@ public class Search extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+
             finish();
             return true;
         }
         return false;
     }
+
 }

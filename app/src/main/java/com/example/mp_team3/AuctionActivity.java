@@ -1,16 +1,20 @@
 package com.example.mp_team3;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -18,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,9 +63,9 @@ public class AuctionActivity extends AppCompatActivity {
     String endTime;
     String prodPic;
     ImageView imgAucPic;
-    TextView tvAucTitle, tvAucPrice, tvAucTime;
+    TextView tvAucTitle, tvAucPrice, tvAucTime, tvAucResult;
     EditText etAucPrice;
-    ImageButton btnAucSend;
+    ImageButton btnAucSend, btnAucBack;
     TimerTask timerTask;
     Timer timer = new Timer();
     FirebaseDatabase db;
@@ -76,6 +81,11 @@ public class AuctionActivity extends AppCompatActivity {
     ArrayList<AuctionModel> list;
     int postNum;
     AuctionAdpater adapter;
+    String highestUid;
+    int sec = 10;
+    Button btnAucClear;
+    LinearLayout aucEndLayout;
+
 
 
     @Override
@@ -96,9 +106,20 @@ public class AuctionActivity extends AppCompatActivity {
         tvAucTitle = (TextView) findViewById(R.id.tvAucTitle);
         tvAucPrice = (TextView) findViewById(R.id.tvAucPrice);
         tvAucTime = (TextView) findViewById(R.id.tvAucTime);
+        tvAucResult = (TextView) findViewById(R.id.tvAucResult);
         etAucPrice = (EditText) findViewById(R.id.etAucPrice);
         btnAucSend = (ImageButton) findViewById(R.id.btnAucSend);
+        btnAucBack = (ImageButton) findViewById(R.id.btnAucBack);
+        btnAucClear = (Button) findViewById(R.id.btnAucClear);
         aucCurUserProf = (CircleImageView) findViewById(R.id.aucCurUserProf);
+        aucEndLayout = (LinearLayout) findViewById(R.id.aucEndLayout);
+
+        btnAucBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         //recycler 세팅
         aucRecycler = (RecyclerView) findViewById(R.id.aucRecycler);
@@ -114,7 +135,7 @@ public class AuctionActivity extends AppCompatActivity {
                 .load(Uri.parse(prodPic))
                 .into(imgAucPic);
 
-        startTimerTask();
+        startTimerTask();// 경매 시간 세팅
 
         list = new ArrayList<>();
 
@@ -142,9 +163,9 @@ public class AuctionActivity extends AppCompatActivity {
         btnAucSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String suggestPrice = etAucPrice.getText().toString();
-                if (Integer.parseInt(suggestPrice) <= Integer.parseInt(price)) {
-                    Toast.makeText(getApplicationContext(),price + "보다 높은 금액을 제시해주세요.", Toast.LENGTH_SHORT);
+                int suggestPrice = Integer.parseInt(etAucPrice.getText().toString());
+                if (suggestPrice <= Integer.parseInt(price)) {
+                    Toast.makeText(AuctionActivity.this,  price + "보다 높은 금액을 제시해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
                     auctionModel = new AuctionModel(user.getUid(), suggestPrice, curUserProf);
                     dbRef.child("posts").child("POST" + "_" + postNum).child("aucJoinUsers").child(user.getUid()).setValue(auctionModel);
@@ -166,7 +187,9 @@ public class AuctionActivity extends AppCompatActivity {
                                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                     AuctionModel recycleAuc = dataSnapshot.getValue(AuctionModel.class);
                                     list.add(recycleAuc);
-                                    Collections.sort(list);
+                                    Collections.sort(list, Collections.reverseOrder());
+                                    highestUid = list.get(0).getUid();
+
                                 }
                                 adapter.notifyDataSetChanged();
                             }
@@ -179,6 +202,7 @@ public class AuctionActivity extends AppCompatActivity {
 
         adapter = new AuctionAdpater(list, this);
         aucRecycler.setAdapter(adapter);
+
 
     }
 
@@ -219,16 +243,24 @@ public class AuctionActivity extends AppCompatActivity {
                 int min = endCal.get(Calendar.MINUTE);
                 int sec = endCal.get(Calendar.SECOND);
 
+//                int day = 0;
+//                int hour = 0;
+//                int min  = 0;
+
                 tvAucTime.post(new Runnable() {
                     @Override
                     public void run() {
+                        //sec--;
                         tvAucTime.setText("남은 시간 " + (day * 24 + hour) + " : "
                                 + min + " : " + sec);
+
                     }
                 });
 
                 if (day == 0 && hour == 0 && min == 0 && sec == 0) {
                     timer.cancel();
+                    Message msg = handler.obtainMessage();
+                    handler.sendMessage(msg);
                     aucEnd();
                 }
             }
@@ -237,13 +269,40 @@ public class AuctionActivity extends AppCompatActivity {
         timer.schedule(timerTask, 0, 1000);
     }
 
+    final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            tvAucTime.setText("경매 종료");
+            aucEndLayout.setVisibility(View.VISIBLE);
+            etAucPrice.setEnabled(false);
+            btnAucSend.setEnabled(false);
+        }
+    };
+
     public void aucEnd() {
-        tvAucTime.setText("경매가 종료 되었습니다");
-        PackageManager pm = getPackageManager();
+
+        if (highestUid.equals(user.getUid())) {
+            tvAucResult.setText("경매에 낙찰되었습니다!");
+        } else {
+
+            tvAucResult.setText("경매가 종료되었습니다");
+        }
+
+        btnAucClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseReference postRef = db.getReference("posts/POST_" + postNum);
+                postRef.removeValue();
+
+                Intent intent = new Intent(AuctionActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
-        pm.setComponentEnabledSetting(new ComponentName(getApplicationContext(),AuctionActivity.class),
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0);
     }
+
+
 
 }
