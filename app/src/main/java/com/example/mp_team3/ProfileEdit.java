@@ -187,10 +187,7 @@ public class ProfileEdit extends AppCompatActivity {
 
         Fragment_my fragmentMy = new Fragment_my();
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.myLinear, fragmentMy);
-        fragmentTransaction.commit();
-        finish();
+        fragmentManager.beginTransaction().replace(R.id.myLinear, fragmentMy).commitNow();
     }
 
 }

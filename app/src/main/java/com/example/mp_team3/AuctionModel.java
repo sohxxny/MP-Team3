@@ -2,12 +2,12 @@ package com.example.mp_team3;
 
 public class AuctionModel implements Comparable<AuctionModel> {
     public String uid;
-    public String suggestPrice;
+    public int suggestPrice;
     public String profImg;
 
     public AuctionModel() {}
 
-    public AuctionModel(String uid, String suggestPrice, String profImg) {
+    public AuctionModel(String uid, int suggestPrice, String profImg) {
         this.uid = uid;
         this.suggestPrice = suggestPrice;
         this.profImg = profImg;
@@ -17,7 +17,7 @@ public class AuctionModel implements Comparable<AuctionModel> {
         return uid;
     }
 
-    public String getSuggestPrice() {
+    public int getSuggestPrice() {
         return suggestPrice;
     }
 
@@ -27,9 +27,9 @@ public class AuctionModel implements Comparable<AuctionModel> {
 
     @Override
     public int compareTo(AuctionModel auctionModel) {
-        if (Integer.parseInt(auctionModel.suggestPrice) < Integer.parseInt(suggestPrice)) {
+        if (auctionModel.suggestPrice < suggestPrice) {
             return 1;
-        } else if (Integer.parseInt(auctionModel.suggestPrice) > Integer.parseInt(suggestPrice)) {
+        } else if (auctionModel.suggestPrice > suggestPrice) {
             return -1;
         } else {
             return 0;

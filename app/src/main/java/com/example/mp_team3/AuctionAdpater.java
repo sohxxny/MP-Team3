@@ -3,6 +3,7 @@ package com.example.mp_team3;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,10 +44,17 @@ public class AuctionAdpater extends RecyclerView.Adapter<AuctionAdpater.ViewHold
     @Override
     public void onBindViewHolder(@NonNull AuctionAdpater.ViewHolder holder, int position) {
         // 참여한 사람 정보
-        holder.tvAucPriceIn.setText(list.get(position).getSuggestPrice());
-        Glide.with(holder.itemView)
-                .load(Uri.parse(list.get(position).getProfImg()))
-                .into(holder.imgAucJoinProf);
+        holder.tvAucPriceIn.setText(String.valueOf(list.get(position).getSuggestPrice()));
+        if (list.get(position).getProfImg() != null) {
+            Glide.with(holder.itemView)
+                    .load(Uri.parse(list.get(position).getProfImg()))
+                    .into(holder.imgAucJoinProf);
+        }
+
+        if (position == 0) {
+            holder.tvAucPriceIn.setTextSize(16);
+            holder.tvAucPriceIn.setTextColor(Color.parseColor("#FF9494"));
+        }
     }
 
     @Override
@@ -58,12 +66,14 @@ public class AuctionAdpater extends RecyclerView.Adapter<AuctionAdpater.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         CircleImageView imgAucJoinProf;
         TextView tvAucPriceIn;
+        LinearLayout aucLinear;
 
         ViewHolder(View itemView) {
             super(itemView);
 
             this.imgAucJoinProf = (CircleImageView) itemView.findViewById(R.id.imgAucJoinProf);
             this.tvAucPriceIn = (TextView) itemView.findViewById(R.id.tvAucPriceIn);
+            aucLinear = (LinearLayout) itemView.findViewById(R.id.aucLinear);
 
         }
 

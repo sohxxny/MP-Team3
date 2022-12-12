@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,6 +48,7 @@ public class ProductActivity extends AppCompatActivity {
     String hasProf;
     int postNum;
     Button btnInAuction;
+    ImageButton btnItmemBack;
     private final String TAG = "ProductActivity";
 
     @Override
@@ -73,6 +75,7 @@ public class ProductActivity extends AppCompatActivity {
         imgSellerProf = (CircleImageView) findViewById(R.id.imgSellerProf);
         imgItemPic = (ImageView) findViewById(R.id.imgItemPic);
         btnInAuction = (Button) findViewById(R.id.btnInAuction);
+        btnItmemBack = (ImageButton) findViewById(R.id.btnItemBack);
 
         //제품 정보 세팅
         tvProdTitle.setText(title);
@@ -97,8 +100,7 @@ public class ProductActivity extends AppCompatActivity {
                             if (document.getData() != null) {
                                 String nickname = document.getData().get("nickname").toString();
                                 tvSeller.setText(nickname);
-                                hasProf = document.getData().get("profileImageUrl").toString();
-                                if (hasProf != null) {
+                                if (document.getData().get("profileImageUrl") != null) {
                                     mStorage = FirebaseStorage.getInstance();
                                     StorageReference storageRef = mStorage.getReference();
                                     storageRef.child("usersprofileImages/" + sellerId + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -138,6 +140,14 @@ public class ProductActivity extends AppCompatActivity {
                 intent.putExtra("prodPic", prodPic);
                 intent.putExtra("postNum", postNum);
                 startActivity(intent);
+            }
+        });
+
+        //뒤로가기
+        btnItmemBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
 
