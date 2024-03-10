@@ -154,12 +154,6 @@ public class Search extends AppCompatActivity {
                     intent.putExtra("searchItem", searchItem);
                     startActivity(intent);
                 }
-
-//                finish();//인텐트 종료
-//                overridePendingTransition(0, 0);//인텐트 효과 없애기
-//                Intent intent = getIntent(); //인텐트
-//                startActivity(intent); //액티비티 열기
-//                overridePendingTransition(0, 0);
             }
         });
 
