@@ -109,15 +109,6 @@ public class RegisterActivity extends AppCompatActivity {
         String email = edInputEmail.getText().toString();
         String password = edInputPassword.getText().toString();
         String nickname = edInputNickname.getText().toString();
-        // 입력하지 않은 칸이 있을 경우 회원가입 실패
-
-        // 이미 존재하는 이메일 계정이면 회원가입 실패
-
-        // 비밀번호, 비밀번호 확인 다를 시 회원가입 실패
-
-        // 닉네임 중복이면 회원가입 실패
-
-        // 이용약관 동의하지 않으면 회원가입 실패
 
         // 받아온 값으로 회원 정보 생성
         mAuth.createUserWithEmailAndPassword(email, password)
