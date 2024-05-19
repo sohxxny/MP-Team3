@@ -6,6 +6,6 @@
 
 ## 화면 구성
 <p align = "center">
-<img src = "https://github.com/we-map/wemap-ios/assets/119118662/ed3d5d39-c71a-4f84-8212-4853fbe100a0" width = "500px" alt = "desc_image1"></img><br/>
-<img src = "https://github.com/we-map/wemap-ios/assets/119118662/0760243c-4200-4405-99ff-b13125336597" width = "500px" alt = "desc_image1"></img><br/>
+<img src = "https://github.com/sohxxny/we-map/assets/119118662/af9d10ef-ce7c-4603-89f4-633085d33eab" width = "700px" alt = "desc_image1"></img><br/>
+<img src = "https://github.com/sohxxny/we-map/assets/119118662/ac0a8446-f71a-4144-a801-f138d2a723a2" width = "700px" alt = "desc_image1"></img><br/>
 </p>
